@@ -2,60 +2,112 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    // 20 produk dummy
-    private $products = [];
-
-    public function __construct()
+    public function home()
     {
-        // Generate 20 produk random
-        for ($i = 1; $i <= 20; $i++) {
-            $this->products[] = [
-                'id' => $i,
-                'name' => "Product $i",
-                'description' => "Description for product $i",
-                'price' => rand(10, 1000),
-            ];
-        }
+        $featuredProducts = Product::with('category')->inRandomOrder()->take(4)->get();
+        $categories = Category::withCount('products')->orderBy('name')->take(6)->get();
+        return view('products.home', compact('featuredProducts', 'categories')); // This looks for resources/views/home.blade.php
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->products;
-        return view('products.list', compact('products'));
+        $query = Product::query()->with('category');
+
+        // Search by name or description
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Filter by price range
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Sorting
+        $sortBy = $request->input('sort_by', 'name'); // Default sort by name
+        $sortDirection = $request->input('sort_direction', 'asc'); // Default sort direction asc
+
+        if (!in_array($sortBy, ['name', 'price', 'created_at'])) {
+            $sortBy = 'name'; // Fallback to default
+        }
+        if (!in_array(strtolower($sortDirection), ['asc', 'desc'])) {
+            $sortDirection = 'asc'; // Fallback to default
+        }
+        $query->orderBy($sortBy, $sortDirection);
+
+        $products = $query->paginate(10)->withQueryString(); // Keeps query params on pagination links
+        $categories = Category::orderBy('name')->get();
+
+        return view('products.list', compact('products', 'categories'));
     }
 
     public function create()
     {
-        return view('products.form');
-    }
-
-    public function edit($id)
-    {
-        $product = collect($this->products)->firstWhere('id', $id);
-        if (!$product) abort(404);
-        return view('products.form', compact('product'));
+        $categories = Category::orderBy('name')->get();
+        return view('products.form', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // Dummy store logic (just redirect back with success)
-        return redirect()->route('products')->with('success', 'Product stored!');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        Product::create($request->all());
+
+        return redirect()->route('products')->with('success', 'Product created successfully!');
     }
 
-    public function update(Request $request, $id)
+    public function show(Product $product) // Route model binding
     {
-        // Dummy update logic
-        return redirect()->route('products')->with('success', 'Product updated!');
-    }
-
-    public function show($id)
-    {
-        $product = collect($this->products)->firstWhere('id', $id);
-        if (!$product) abort(404);
+        $product->load('category'); // Eager load category
         return view('products.show', compact('product'));
+    }
+
+    public function edit(Product $product) // Route model binding
+    {
+        $categories = Category::orderBy('name')->get();
+        return view('products.form', compact('product', 'categories'));
+    }
+
+    public function update(Request $request, Product $product) // Route model binding
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $product->update($request->all());
+
+        return redirect()->route('products')->with('success', 'Product updated successfully!');
+    }
+
+    public function destroy(Product $product) // Route model binding
+    {
+        $product->delete();
+        return redirect()->route('products')->with('success', 'Product deleted successfully!');
     }
 }
