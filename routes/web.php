@@ -44,6 +44,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/{order}', 'show')->name('show');
     });
+    
+    // Rute Wishlist
+    Route::prefix('wishlist')->controller(WishlistController::class)->name('wishlist.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/toggle/{product}', 'toggle')->name('toggle');
+    });
 });
 
 

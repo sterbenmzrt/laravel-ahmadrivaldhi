@@ -37,6 +37,7 @@
 
                     @auth
                         {{-- Link ini hanya muncul jika user sudah login --}}
+                        <a class="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 rounded" href="{{ route('wishlist.index') }}">Wishlist</a>
                         <a class="px-3 py-2 text-gray-700 dark:text-gray-200 hover:text-gray-900 rounded" href="{{ route('cart.index') }}">Cart</a>
                         <a class="px-3 py-2 text-gray-700 dark:text-gray-200" href="{{ route('orders.index') }}">My Orders</a>
                         <span class="px-3 py-2 text-gray-500 dark:text-gray-400">{{ Auth::user()->name }}</span>
