@@ -14,7 +14,7 @@
 
         <div class="mb-6">
             <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">Price</h2>
-            <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">${{ number_format($product->price, 2) }}</p>
+            <p class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
         </div>
 
         <div class="mt-6">

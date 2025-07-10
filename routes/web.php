@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\WishlistController;
 
 // The root URL '/' now serves as the home page and is named 'home'
 Route::get('/', [ProductController::class, 'home'])->name('home');
@@ -44,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/{order}', 'show')->name('show');
     });
-    
+
     // Rute Wishlist
     Route::prefix('wishlist')->controller(WishlistController::class)->name('wishlist.')->group(function () {
         Route::get('/', 'index')->name('index');
