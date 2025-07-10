@@ -23,21 +23,28 @@ class CartController extends Controller
     // Menambahkan produk ke keranjang
     public function add(Request $request, Product $product)
     {
-        $request->validate(['quantity' => 'required|integer|min:1']);
+        // Gunakan validasi baru
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'final_price' => 'required|numeric|min:0',
+        ]);
 
         $cartItem = CartItem::where('user_id', Auth::id())
-                            ->where('product_id', $product->id)
-                            ->first();
+            ->where('product_id', $product->id)
+            ->first();
 
         if ($cartItem) {
-            // Jika produk sudah ada, tambahkan jumlahnya
-            $cartItem->increment('quantity', $request->quantity);
+            $cartItem->update([
+                'quantity' => $request->quantity,
+                'price' => $request->final_price, // Simpan harga per anggota
+            ]);
         } else {
-            // Jika produk belum ada, buat item baru
+            // Buat item keranjang baru dengan harga dinamis
             CartItem::create([
                 'user_id' => Auth::id(),
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
+                'price' => $request->final_price, // Simpan harga per anggota
             ]);
         }
 

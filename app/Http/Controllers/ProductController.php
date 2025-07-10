@@ -78,9 +78,9 @@ class ProductController extends Controller
         return redirect()->route('products')->with('success', 'Product created successfully!');
     }
 
-    public function show(Product $product) // Route model binding
+    public function show(Product $product) 
     {
-        $product->load('category'); // Eager load category
+        $product->load('category');
         return view('products.show', compact('product'));
     }
 
