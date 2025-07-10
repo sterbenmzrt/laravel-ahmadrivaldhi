@@ -7,13 +7,11 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WishlistController;
 
-// The root URL '/' now serves as the home page and is named 'home'
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::prefix('products')->controller(ProductController::class)->group(function () {
     Route::get('/', 'index')->name('products');
-    // ... rute produk yang sudah ada ...
-    Route::get('/{product}', 'show')->name('products.show'); // Letakkan ini sebelum rute dengan middleware auth jika detail produk boleh dilihat publik
+    Route::get('/{product}', 'show')->name('products.show'); 
 });
 
 // Grup untuk Rute yang Membutuhkan Autentikasi

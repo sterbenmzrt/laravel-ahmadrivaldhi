@@ -9,9 +9,8 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = ['Electronics', 'Books', 'Clothing', 'Home Goods', 'Sports'];
-        foreach ($categories as $category) {
-            Category::factory()->create(['name' => $category]);
-        }
+        Category::create(['name' => 'AI Assistants']);
+        Category::create(['name' => 'Entertainment']);
+        Category::create(['name' => 'Productivity']);
     }
 }

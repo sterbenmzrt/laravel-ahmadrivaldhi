@@ -14,7 +14,10 @@ class ProductSeeder extends Seeder
             $this->call(CategorySeeder::class);
         }
 
+        $categories = Category::pluck('id', 'name');
+
         $products = [
+            // AI Assistants
             [
                 'name' => 'ChatGPT Plus',
                 'description' => 'Akses prioritas ke fitur-fitur terbaru dari OpenAI, respons lebih cepat, dan ketersediaan tinggi.',
@@ -43,6 +46,71 @@ class ProductSeeder extends Seeder
                 'image' => 'images/perplexity.png',
                 'category_name' => 'AI Assistants'
             ],
+            // Entertainment
+            [
+                'name' => 'Netflix Premium',
+                'description' => 'Streaming film dan acara TV tanpa batas dalam kualitas Ultra HD (4K) di empat perangkat sekaligus.',
+                'price' => 186000,
+                'image' => 'images/netflix.png', 
+                'category_name' => 'Entertainment'
+            ],
+            [
+                'name' => 'Spotify Premium',
+                'description' => 'Dengarkan musik tanpa iklan, putar lagu apa pun, dan unduh musik untuk didengarkan secara offline.',
+                'price' => 54990,
+                'image' => 'images/spotify.png', 
+                'category_name' => 'Entertainment'
+            ],
+            [
+                'name' => 'YouTube Premium',
+                'description' => 'Tonton video tanpa iklan, putar di latar belakang, dan akses YouTube Music Premium.',
+                'price' => 59000,
+                'image' => 'images/youtube.png', 
+                'category_name' => 'Entertainment'
+            ],
+            [
+                'name' => 'Disney+ Hotstar',
+                'description' => 'Akses ke ribuan film dan serial dari Disney, Pixar, Marvel, Star Wars, dan National Geographic.',
+                'price' => 399000, 
+                'image' => 'images/disney.png',
+                'category_name' => 'Entertainment'
+            ],
+            [
+                'name' => 'HBO GO',
+                'description' => 'Streaming semua serial dan film original HBO, bersama dengan film-film Hollywood blockbuster.',
+                'price' => 79000,
+                'image' => 'images/hbo.png', 
+                'category_name' => 'Entertainment'
+            ],
+            // Productivity
+            [
+                'name' => 'Microsoft 365 Personal',
+                'description' => 'Akses ke Word, Excel, PowerPoint, Outlook, dan 1 TB penyimpanan cloud OneDrive.',
+                'price' => 959000, 
+                'image' => 'images/microsoft365.png', 
+                'category_name' => 'Productivity'
+            ],
+            [
+                'name' => 'Canva Pro',
+                'description' => 'Buka semua fitur premium Canva, termasuk ribuan template, foto, dan alat desain canggih.',
+                'price' => 769000, 
+                'image' => 'images/canva.png', 
+                'category_name' => 'Productivity'
+            ],
+            [
+                'name' => 'Notion AI',
+                'description' => 'Tingkatkan produktivitas Anda dengan fitur AI terintegrasi langsung di dalam Notion workspace Anda.',
+                'price' => 150000,
+                'image' => 'images/notion.png', 
+                'category_name' => 'Productivity'
+            ],
+            [
+                'name' => 'Grammarly Premium',
+                'description' => 'Perbaiki tata bahasa, ejaan, dan gaya penulisan Anda dengan asisten penulisan bertenaga AI.',
+                'price' => 180000,
+                'image' => 'images/grammarly.png', 
+                'category_name' => 'Productivity'
+            ],
             [
                 'name' => 'Lovable',
                 'description' => 'Aplikasi AI untuk meningkatkan hubungan personal dan profesional Anda.',
@@ -53,14 +121,13 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            $category = Category::firstOrCreate(['name' => $productData['category_name']]);
             Product::create([
                 'name' => $productData['name'],
                 'description' => $productData['description'],
                 'price' => $productData['price'],
                 'image' => $productData['image'],
-                'category_id' => $category->id,
+                'category_id' => $categories[$productData['category_name']],
             ]);
         }
     }
-}
+}                                                                                                                   

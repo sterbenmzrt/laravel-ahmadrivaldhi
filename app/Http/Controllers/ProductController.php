@@ -10,9 +10,8 @@ class ProductController extends Controller
 {
     public function home()
     {
-        $featuredProducts = Product::with('category')->inRandomOrder()->take(4)->get();
-        $categories = Category::withCount('products')->orderBy('name')->take(6)->get();
-        return view('products.home', compact('featuredProducts', 'categories')); // This looks for resources/views/home.blade.php
+        $featuredProducts = Product::with('category')->inRandomOrder()->take(5)->get();
+        return view('products.home', compact('featuredProducts'));
     }
 
     public function index(Request $request)
