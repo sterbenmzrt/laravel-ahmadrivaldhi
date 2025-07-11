@@ -14,7 +14,7 @@
                 <h3 class="font-bold mb-4">Tautan Cepat</h3>
                 <ul class="space-y-2">
                     <li><a href="{{ route('products') }}" class="text-gray-400 hover:text-white">Semua Produk</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-white">Tentang Kami</a></li>
+                    <li><a href="{{ route('about') }}" class="text-gray-400 hover:text-white">Tentang Kami</a></li>
                     <li><a href="#" class="text-gray-400 hover:text-white">Kontak</a></li>
                 </ul>
             </div>

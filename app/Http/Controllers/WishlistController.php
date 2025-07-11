@@ -19,23 +19,30 @@ class WishlistController extends Controller
     // Menambah atau menghapus produk dari wishlist
     public function toggle(Product $product)
     {
-        $user = Auth::user();
+        if (!Auth::check()) {
+            return response()->json(['status' => 'error', 'message' => 'Login is required.'], 401);
+        }
 
+        $user = Auth::user();
         $wishlistItem = WishlistItem::where('user_id', $user->id)
-                                    ->where('product_id', $product->id)
-                                    ->first();
+            ->where('product_id', $product->id)
+            ->first();
 
         if ($wishlistItem) {
-            // Jika sudah ada, hapus dari wishlist
             $wishlistItem->delete();
-            return back()->with('success', 'Product removed from your wishlist.');
+            return response()->json([
+                'status' => 'removed',
+                'message' => 'Produk dihapus dari wishlist.'
+            ]);
         } else {
-            // Jika belum ada, tambahkan ke wishlist
             WishlistItem::create([
                 'user_id' => $user->id,
                 'product_id' => $product->id,
             ]);
-            return back()->with('success', 'Product added to your wishlist!');
+            return response()->json([
+                'status' => 'added',
+                'message' => 'Produk ditambahkan ke wishlist!'
+            ]);
         }
     }
 }

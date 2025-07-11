@@ -4,76 +4,103 @@ namespace App\Http\Controllers;
 
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\Coupon; // <-- Tambahkan ini
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session; // <-- Tambahkan ini
 
 class CartController extends Controller
 {
-    // Menampilkan halaman keranjang belanja
     public function index()
     {
         $cartItems = Auth::user()->cartItems()->with('product')->get();
-        $subtotal = $cartItems->sum(function ($item) {
-            return $item->quantity * $item->product->price;
-        });
+        $subtotal = $cartItems->sum(fn ($item) => $item->quantity * $item->product->price);
 
-        return view('cart.index', compact('cartItems', 'subtotal'));
+        // Logika untuk menghitung diskon dari kupon di session
+        $discount = 0;
+        if (Session::has('coupon')) {
+            $coupon = Session::get('coupon');
+            if ($coupon->type == 'percent') {
+                $discount = ($coupon->value / 100) * $subtotal;
+            } else {
+                $discount = $coupon->value;
+            }
+        }
+
+        $total = $subtotal - $discount;
+
+        // Kirim semua data ke view, termasuk diskon dan total
+        return view('cart.index', compact('cartItems', 'subtotal', 'discount', 'total'));
     }
 
-    // Menambahkan produk ke keranjang
     public function add(Request $request, Product $product)
     {
-        // Gunakan validasi baru
-        $request->validate([
+        $validated = $request->validate([
             'quantity' => 'required|integer|min:1',
-            'final_price' => 'required|numeric|min:0',
+            'final_price' => 'sometimes|required|numeric|min:0',
         ]);
-
-        $cartItem = CartItem::where('user_id', Auth::id())
-            ->where('product_id', $product->id)
-            ->first();
+        $user = Auth::user();
+        $cartItem = CartItem::where('user_id', $user->id)->where('product_id', $product->id)->first();
+        $price = $validated['final_price'] ?? $product->price;
 
         if ($cartItem) {
-            $cartItem->update([
-                'quantity' => $request->quantity,
-                'price' => $request->final_price, // Simpan harga per anggota
-            ]);
+            $cartItem->increment('quantity', $validated['quantity']);
         } else {
-            // Buat item keranjang baru dengan harga dinamis
             CartItem::create([
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
                 'product_id' => $product->id,
-                'quantity' => $request->quantity,
-                'price' => $request->final_price, // Simpan harga per anggota
+                'quantity' => $validated['quantity'],
+                'price' => $price,
             ]);
         }
-
-        return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+        $user->wishlistItems()->where('product_id', $product->id)->delete();
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Produk berhasil ditambahkan ke keranjang!']);
+        }
+        return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
-    // Mengubah jumlah produk
     public function update(Request $request, CartItem $cartItem)
     {
-        // Pastikan user hanya bisa mengubah item miliknya
-        if ($cartItem->user_id !== Auth::id()) {
-            abort(403);
-        }
-
+        if ($cartItem->user_id !== Auth::id()) { abort(403); }
         $request->validate(['quantity' => 'required|integer|min:1']);
         $cartItem->update(['quantity' => $request->quantity]);
-
-        return back()->with('success', 'Cart updated successfully!');
+        return back()->with('success', 'Keranjang berhasil diperbarui!');
     }
 
-    // Menghapus produk dari keranjang
     public function remove(CartItem $cartItem)
     {
-        // Pastikan user hanya bisa menghapus item miliknya
-        if ($cartItem->user_id !== Auth::id()) {
-            abort(403);
+        if ($cartItem->user_id !== Auth::id()) { abort(403); }
+        $cartItem->delete();
+        return back()->with('success', 'Produk dihapus dari keranjang.');
+    }
+
+    /**
+     * Menerapkan kode kupon.
+     */
+    public function applyCoupon(Request $request)
+    {
+        $coupon = Coupon::where('code', $request->coupon_code)
+                        ->where(function ($query) {
+                            $query->where('expires_at', '>=', now())
+                                  ->orWhereNull('expires_at');
+                        })
+                        ->first();
+
+        if (!$coupon) {
+            return back()->with('error', 'Kupon tidak valid atau sudah kedaluwarsa.');
         }
 
-        $cartItem->delete();
-        return back()->with('success', 'Product removed from cart.');
+        Session::put('coupon', $coupon);
+        return back()->with('success', 'Kupon berhasil diterapkan!');
+    }
+
+    /**
+     * Menghapus kupon yang diterapkan.
+     */
+    public function removeCoupon()
+    {
+        Session::forget('coupon');
+        return back()->with('success', 'Kupon telah dihapus.');
     }
 }

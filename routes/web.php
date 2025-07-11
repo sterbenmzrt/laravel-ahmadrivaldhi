@@ -6,13 +6,18 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\CouponController; 
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::prefix('products')->controller(ProductController::class)->group(function () {
     Route::get('/', 'index')->name('products');
-    Route::get('/{product}', 'show')->name('products.show'); 
+    Route::get('/{product}', 'show')->name('products.show');
 });
+
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/about-us', [PageController::class, 'about'])->name('about');
 
 // Grup untuk Rute yang Membutuhkan Autentikasi
 Route::middleware('auth')->group(function () {
@@ -30,6 +35,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/add/{product}', 'add')->name('add');
         Route::patch('/update/{cartItem}', 'update')->name('update');
         Route::delete('/remove/{cartItem}', 'remove')->name('remove');
+        Route::post('/apply-coupon', 'applyCoupon')->name('applyCoupon');
+        Route::post('/remove-coupon', 'removeCoupon')->name('removeCoupon');
     });
 
     // Rute Checkout
@@ -53,4 +60,4 @@ Route::middleware('auth')->group(function () {
 
 
 // Rute autentikasi dari Laravel Breeze
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

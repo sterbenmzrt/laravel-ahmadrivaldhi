@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -78,10 +79,14 @@ class ProductController extends Controller
         return redirect()->route('products')->with('success', 'Product created successfully!');
     }
 
-    public function show(Product $product) 
+    public function show(Product $product)
     {
         $product->load('category');
-        return view('products.show', compact('product'));
+
+        // Cek status wishlist untuk pengguna yang sedang login
+        $isInWishlist = Auth::check() ? Auth::user()->wishlistItems()->where('product_id', $product->id)->exists() : false;
+
+        return view('products.show', compact('product', 'isInWishlist'));
     }
 
     public function edit(Product $product) // Route model binding

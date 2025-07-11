@@ -47,6 +47,20 @@ document.addEventListener('alpine:init', () => {
             }).format(number);
         }
     }));
+
+    Alpine.data('toast', () => ({
+        visible: false,
+        message: '',
+        timer: null,
+        show(message) {
+            this.message = message;
+            this.visible = true;
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.visible = false;
+            }, 3000); // Notifikasi akan hilang setelah 3 detik
+        }
+    }));
 });
 
 Alpine.start();

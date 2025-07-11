@@ -1,69 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto">
-    <h1 class="text-3xl font-bold mb-4 text-gray-800 dark:text-gray-200">Semua Produk</h1>
-    <p class="text-gray-600 dark:text-gray-400 mb-8">Jelajahi semua akun premium yang kami tawarkan.</p>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12"> {{-- Penyesuaian: Menambah padding vertikal --}}
 
-    <form method="GET" action="{{ route('products') }}" class="mb-10 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <div class="md:col-span-2">
-                <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Cari Produk</label>
-                <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Contoh: ChatGPT Plus">
-            </div>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-0">Semua Produk</h1>
 
-            <div>
-                <label for="category_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Kategori</label>
-                <select name="category_id" id="category_id" class="mt-1 block w-full border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="">Semua</option>
+        <div class="w-full md:w-auto">
+            <form method="GET" action="{{ route('products') }}" class="flex items-center bg-white dark:bg-gray-800 rounded-lg shadow p-2 space-x-2">
+                <div class="relative flex-grow">
+                    <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" name="search" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-2 border-none rounded-md focus:ring-0 bg-transparent dark:text-white" placeholder="Cari akun...">
+                </div>
+                <select name="category_id" onchange="this.form.submit()" class="border-none rounded-md focus:ring-0 bg-gray-100 dark:bg-gray-700 dark:text-white cursor-pointer">
+                    <option value="">Semua Kategori</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
                         </option>
                     @endforeach
                 </select>
-            </div>
-
-            <div class="flex space-x-2">
-                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-150">
-                    Filter
-                </button>
-                <a href="{{ route('products') }}" class="w-full text-center px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-500 transition duration-150">
-                    Reset
-                </a>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 
-    @if($products->count() > 0)
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            @foreach ($products as $product)
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden group transition-transform duration-300 ease-in-out hover:-translate-y-2">
-                <a href="{{ route('products.show', $product) }}">
-                    <div class="relative">
-                        <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="w-full h-48 object-contain p-4 bg-gray-100 dark:bg-gray-700">
-                        <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <p class="text-white text-lg font-bold">Lihat Detail</p>
-                        </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+        @forelse ($products as $product)
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden group transform hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center p-4">
+                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-110">
+                </div>
+                <div class="p-5 flex flex-col flex-grow">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">{{ $product->name }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ $product->category->name ?? 'N/A' }}</p>
+                    <div class="mt-auto pt-4">
+                        <a href="{{ route('products.show', $product) }}" class="block w-full text-center bg-blue-800 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-900 transition">
+                            Lihat Detail
+                        </a>
                     </div>
-                    <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate" title="{{ $product->name }}">{{ $product->name }}</h3>
-                        <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">{{ $product->category->name }}</p>
-                        <p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                    </div>
-                </a>
+                </div>
             </div>
-            @endforeach
-        </div>
+        @empty
+            <div class="col-span-full text-center py-20">
+                <p class="text-xl text-gray-500 dark:text-gray-400">Oops! Produk yang Anda cari tidak ditemukan.</p>
+                <a href="{{ route('products') }}" class="mt-4 inline-block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Lihat semua produk</a>
+            </div>
+        @endforelse
+    </div>
 
-        <div class="mt-12">
-            {{ $products->links() }}
-        </div>
-    @else
-        <div class="text-center py-16">
-            <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300">Produk Tidak Ditemukan</h2>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
-        </div>
-    @endif
+    <div class="mt-16">
+        {{ $products->withQueryString()->links() }}
+    </div>
 </div>
 @endsection
