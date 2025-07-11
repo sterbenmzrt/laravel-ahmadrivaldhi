@@ -1,61 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ramean.id - Platform Patungan Akun Premium
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
 
-## About Laravel
+## 🚀 Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Proyek ini dibangun menggunakan teknologi modern yang andal dan skalabel.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Backend
+* **PHP 8.2+**
+* **Laravel 12**: Framework utama untuk membangun aplikasi.
+* **Filament 3**: Digunakan untuk membuat panel admin yang cantik dan fungsional dengan cepat.
+* **SQLite**: Database *default* untuk kemudahan setup di lingkungan pengembangan.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Frontend
+* **Vite**: *Build tool* modern untuk kompilasi aset frontend yang sangat cepat.
+* **Tailwind CSS**: Framework CSS *utility-first* untuk membangun antarmuka pengguna yang kustom dan responsif.
+* **Alpine.js**: Framework JavaScript minimalis untuk menambahkan interaktivitas pada antarmuka, seperti *dark mode*, *dropdown*, dan kalkulasi harga dinamis.
 
-## Learning Laravel
+## ✨ Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Aplikasi Ramean.id memiliki serangkaian fitur lengkap yang mencakup kebutuhan pengguna dan administrator.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Fitur untuk Pengguna
+1.  **Halaman Utama (Landing Page)**:
+    * Menampilkan *hero section*, keunggulan layanan, produk unggulan, alur pemesanan, dan kontak.
+    * Desain yang bersih dan responsif.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2.  **Katalog Produk**:
+    * Halaman daftar produk dengan tata letak kartu yang minimalis.
+    * Fitur pencarian dan filter berdasarkan kategori.
 
-## Laravel Sponsors
+3.  **Halaman Detail Produk Dinamis**:
+    * Menampilkan detail produk dengan skema harga patungan yang interaktif.
+    * Pengguna bisa memilih jumlah anggota grup, dan harga akan menyesuaikan secara otomatis.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4.  **Wishlist (Daftar Favorit)**:
+    * Pengguna dapat menambah atau menghapus produk dari *wishlist* secara instan tanpa *refresh* halaman.
+    * Halaman khusus untuk melihat semua produk yang ada di *wishlist*.
 
-### Premium Partners
+5.  **Keranjang Belanja (Cart)**:
+    * Fungsi untuk menambah, mengubah kuantitas, dan menghapus produk dari keranjang.
+    * Penerapan kupon diskon untuk mengurangi total belanja.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+6.  **Proses Checkout**:
+    * Meminta nomor WhatsApp untuk konfirmasi pesanan.
+    * Sistem pembayaran menggunakan QRIS yang ditampilkan di halaman.
 
-## Contributing
+7.  **Riwayat Pesanan**:
+    * Pengguna dapat melihat daftar semua pesanan yang pernah mereka buat beserta statusnya.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+8.  **Halaman Statis**:
+    * Halaman **FAQ** dengan desain akordeon yang interaktif.
+    * Halaman **About Us** untuk menjelaskan visi dan misi Ramean.id.
 
-## Code of Conduct
+### Fitur untuk Admin (Panel Filament)
+1.  **Manajemen Pengguna**: CRUD (*Create, Read, Update, Delete*) untuk semua pengguna yang terdaftar.
+2.  **Manajemen Produk**: CRUD untuk produk yang dijual, termasuk mengunggah gambar logo.
+3.  **Manajemen Kupon**: CRUD untuk membuat dan mengelola kupon diskon (nominal tetap atau persentase).
+4.  **Panel Admin Terproteksi**: Hanya pengguna dengan status admin yang bisa mengakses panel.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## ⚙️ Cara Penggunaan & Instalasi Lokal
 
-## Security Vulnerabilities
+Berikut adalah langkah-langkah untuk menjalankan proyek ini di lingkungan pengembangan Anda.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1.  **Clone Repository**
+    ```bash
+    git clone [URL_REPOSITORY_ANDA]
+    cd nama-direktori-proyek
+    ```
 
-## License
+2.  **Instal Dependensi**
+    Pastikan Anda memiliki Composer dan NPM terinstal.
+    ```bash
+    # Instal dependensi PHP
+    composer install
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    # Instal dependensi JavaScript
+    npm install
+    ```
+
+3.  **Konfigurasi Lingkungan**
+    Salin file `.env.example` menjadi `.env`.
+    ```bash
+    cp .env.example .env
+    ```
+    Buat *application key* baru untuk proyek Anda.
+    ```bash
+    php artisan key:generate
+    ```
+
+4.  **Setup Database**
+    Perintah ini akan membuat semua tabel yang dibutuhkan dan mengisinya dengan data awal (produk, kategori, dan akun admin).
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+5.  **Jalankan Server Pengembangan**
+    Perintah ini akan menjalankan server PHP dan mengkompilasi aset frontend secara bersamaan.
+    ```bash
+    npm run dev
+    ```
+
+6.  **Akses Aplikasi**
+    * **Situs Pengguna**: Buka `http://127.0.0.1:8000` di browser Anda.
+    * **Panel Admin**: Buka `http://127.0.0.1:8000/1` (atau `/admin` jika Anda mengaturnya demikian).
+
+7.  **Login Admin**
+    Gunakan kredensial default yang sudah dibuat oleh *seeder*:
+    * **Email**: `admin@example.com`
+    * **Password**: `password`
